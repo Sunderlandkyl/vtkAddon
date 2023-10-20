@@ -130,6 +130,8 @@ set(vtkAddon_SRCS
 if(VTK_RENDERING_BACKEND STREQUAL "OpenGL2")
   set(vtkAddon_SRCS
     ${vtkAddon_SRCS}
+    vtkJumpFloodAlgorithmPass.cxx
+    vtkJumpFloodAlgorithmPass.h
     vtkOpenGLShaderComputation.cxx
     vtkOpenGLShaderComputation.h
     vtkOpenGLTextureImage.cxx
@@ -140,6 +142,23 @@ if(VTK_RENDERING_BACKEND STREQUAL "OpenGL2")
     ${vtkAddon_LIBS}
     ${OPENGL_LIBRARIES}
   )
+
+  set(shader_files
+  glsl/vtkJumpFloodAlgorithmFS.glsl
+  glsl/vtkJumpFloodInitFS.glsl
+  glsl/vtkJumpFloodOutlineFS.glsl
+  )
+  foreach(file IN LISTS shader_files)
+    vtk_encode_string(
+      INPUT         "${file}"
+      HEADER_OUTPUT header
+      SOURCE_OUTPUT source)
+    list(APPEND vtkAddon_SRCS
+      "${source}")
+    list(APPEND vtkAddon_SRCS
+      "${header}")
+  endforeach()
+
 endif()
 
 # Abstract/pure virtual classes
